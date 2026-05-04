@@ -9,7 +9,6 @@
 :root {
   --primary: #8a1538;
   --primary-dark: #6f102d;
-  --bg: #f3f5f7;
   --card: #ffffff;
   --text: #172033;
   --muted: #6b7280;
@@ -27,6 +26,7 @@ body {
   color: var(--text);
 }
 
+/* LOGIN */
 #loginScreen {
   position: fixed;
   inset: 0;
@@ -48,9 +48,6 @@ body {
   border: 1px solid var(--border);
 }
 
-.login-box h2 { margin: 0; font-size: 24px; }
-.login-box p { color: var(--muted); margin-bottom: 22px; }
-
 .login-box input {
   width: 100%;
   padding: 13px;
@@ -66,6 +63,7 @@ body {
 
 #loginError { color: var(--danger); }
 
+/* HEADER */
 header {
   position: sticky;
   top: 0;
@@ -90,6 +88,7 @@ header p {
   font-size: 15px;
 }
 
+/* MAIN */
 main {
   max-width: 1450px;
   margin: 34px auto;
@@ -149,26 +148,18 @@ button {
   color: white;
   cursor: pointer;
   font-weight: bold;
-  transition: 0.2s;
 }
 
-button:hover {
-  background: var(--primary-dark);
-}
+button:hover { background: var(--primary-dark); }
 
-button.secondary {
-  background: #374151;
-}
-
-button.danger {
-  background: var(--danger);
-}
+button.danger { background: var(--danger); }
 
 button.small {
   padding: 8px 12px;
   font-size: 12px;
 }
 
+/* DESKTOP TABLE */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -219,6 +210,7 @@ tr:hover { background: #fff7fb; }
   font-size: 13px;
 }
 
+/* MOBILE CARDS */
 .mobile-cards { display: none; }
 
 .task-card {
@@ -251,9 +243,7 @@ tr:hover { background: #fff7fb; }
   margin-bottom: 12px;
 }
 
-.task-row {
-  margin-bottom: 10px;
-}
+.task-row { margin-bottom: 10px; }
 
 .task-label {
   display: block;
@@ -268,9 +258,7 @@ tr:hover { background: #fff7fb; }
   margin-top: 12px;
 }
 
-.card-actions button {
-  flex: 1;
-}
+.card-actions button { flex: 1; }
 
 .empty-row,
 .empty-mobile {
@@ -289,12 +277,12 @@ tr:hover { background: #fff7fb; }
   border-radius: 12px;
   display: none;
   z-index: 99999;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .toast.success { background: var(--success); }
 .toast.error { background: var(--danger); }
 
+/* MOBILE */
 @media (max-width: 768px) {
   header { padding: 18px 12px; }
   header h1 { font-size: 24px; }
@@ -386,7 +374,7 @@ tr:hover { background: #fff7fb; }
 
     <div id="mobileCards" class="mobile-cards"></div>
 
-    <p class="note">يمكن التعديل مباشرة من الجدول أو من بطاقات الهاتف، ويتم حفظ التغييرات في Airtable.</p>
+    <p class="note">يمكن التعديل مباشرة، ويتم حفظ التغييرات في Airtable.</p>
   </section>
 </main>
 
@@ -401,6 +389,7 @@ function showToast(message, type = "success") {
   toast.innerText = message;
   toast.className = "toast " + type;
   toast.style.display = "block";
+
   setTimeout(() => {
     toast.style.display = "none";
   }, 2200);
@@ -517,7 +506,7 @@ function renderMobileCards(records) {
     card.className = "task-card";
 
     card.innerHTML = `
-      <div class="task-card-title">${f["الفعالية"] || "مهمة جديدة"}</div>
+      <div class="task-card-title">${escapeHtml(f["الفعالية"] || "مهمة جديدة")}</div>
 
       <div class="task-row">
         <label class="task-label">التاريخ</label>
@@ -586,11 +575,13 @@ async function saveMobileCard(id, button) {
 }
 
 async function addTask() {
+  const today = new Date().toISOString().split("T")[0];
+
   const res = await fetch("/api/tasks", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      "التاريخ": "",
+      "التاريخ": today,
       "التوقيت": "",
       "الفعالية": "مهمة جديدة",
       "القاعة": "",
