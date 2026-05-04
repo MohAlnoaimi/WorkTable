@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مجلس النواب - الإعلام الإلكتروني</title>
+
+<style>
+:root {
+  --primary: #8a1538;
+  --primary-dark: #6f102d;
+  --bg: #f3f5f7;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --danger: #b91c1c;
+  --success: #15803d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Tahoma", "Arial", sans-serif;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef1f5 100%);
+  color: var(--text);
+}
+
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-box {
+  width: 92%;
+  max-width: 380px;
+  background: white;
+  padding: 32px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+}
+
+.login-box h2 { margin: 0; font-size: 24px; }
+.login-box p { color: var(--muted); margin-bottom: 22px; }
+
+.login-box input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.login-box button {
+  width: 100%;
+  margin-top: 12px;
+}
+
+#loginError { color: var(--danger); }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 18px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+main {
+  max-width: 1450px;
+  margin: 34px auto;
+  padding: 0 22px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 26px;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.title-block h2 {
+  margin: 0;
+  font-size: 24px;
+  padding-right: 14px;
+  border-right: 5px solid var(--primary);
+}
+
+.title-block span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-box {
+  width: 280px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+button.secondary {
+  background: #374151;
+}
+
+button.danger {
+  background: var(--danger);
+}
+
+button.small {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+  background: white;
+}
+
+th {
+  background: #f1f3f6;
+  color: #111827;
+  font-size: 14px;
+  padding: 16px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 15px 14px;
+  border-bottom: 1px solid #edf0f3;
+  color: #374151;
+  font-size: 14px;
+}
+
+td[contenteditable="true"] {
+  background: #fffdf6;
+  cursor: text;
+  outline: none;
+}
+
+td[contenteditable="true"]:focus {
+  background: #fff7d6;
+  box-shadow: inset 0 0 0 2px #eab308;
+}
+
+tr:nth-child(even) { background: #fafafa; }
+tr:hover { background: #fff7fb; }
+
+.note {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mobile-cards { display: none; }
+
+.task-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.task-card input,
+.task-card textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  margin-top: 5px;
+}
+
+.task-card textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.task-card-title {
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.task-row {
+  margin-bottom: 10px;
+}
+
+.task-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.card-actions button {
+  flex: 1;
+}
+
+.empty-row,
+.empty-mobile {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #111827;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: none;
+  z-index: 99999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+@media (max-width: 768px) {
+  header { padding: 18px 12px; }
+  header h1 { font-size: 24px; }
+  header p { font-size: 13px; }
+
+  main {
+    padding: 0 12px;
+    margin-top: 20px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .section-header { align-items: stretch; }
+
+  .title-block h2 { font-size: 20px; }
+  .title-block span { font-size: 12px; }
+
+  .controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .search-box,
+  button {
+    width: 100%;
+  }
+
+  .table-wrapper { display: none; }
+  .mobile-cards { display: block; }
+
+  .note {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
+    <p>مجلس النواب - الإعلام الإلكتروني</p>
+    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
+    <button onclick="login()">دخول</button>
+    <p id="loginError"></p>
+  </div>
+</div>
+
+<header>
+  <h1>مجلس النواب</h1>
+  <p>الإعلام الإلكتروني</p>
+</header>
+
+<main>
+  <section class="card">
+    <div class="section-header">
+      <div class="title-block">
+        <h2>جدول المهام المحدث</h2>
+        <span>متابعة وتحديث مهام التغطية الإعلامية الإلكترونية</span>
+      </div>
+
+      <div class="controls">
+        <input class="search-box" type="text" id="searchInput" placeholder="بحث في المهام..." />
+        <button onclick="addTask()">+ إضافة مهمة</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="tasksTable">
+        <thead>
+          <tr>
+            <th>التاريخ</th>
+            <th>التوقيت</th>
+            <th>الفعالية</th>
+            <th>القاعة</th>
+            <th>الموظف المكلف</th>
+            <th>ملاحظات</th>
+            <th>إجراء</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="mobileCards" class="mobile-cards"></div>
+
+    <p class="note">يمكن التعديل مباشرة من الجدول أو من بطاقات الهاتف، ويتم حفظ التغييرات في Airtable.</p>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const columns = ["التاريخ", "التوقيت", "الفعالية", "القاعة", "الموظف المكلف", "ملاحظات"];
+let allRecords = [];
+
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.className = "toast " + type;
+  toast.style.display = "block";
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 2200);
+}
+
+async function checkLogin() {
+  const res = await fetch("/api/check-login");
+  const data = await res.json();
+
+  if (data.loggedIn) {
+    document.getElementById("loginScreen").style.display = "none";
+    loadTasks();
+  }
+}
+
+async function login() {
+  const password = document.getElementById("passwordInput").value;
+
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ password })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    document.getElementById("loginScreen").style.display = "none";
+    loadTasks();
+  } else {
+    document.getElementById("loginError").innerText = "كلمة المرور غير صحيحة";
+  }
+}
+
+async function loadTasks() {
+  const res = await fetch("/api/tasks");
+
+  if (!res.ok) {
+    showToast("حدث خطأ أثناء تحميل البيانات", "error");
+    return;
+  }
+
+  const records = await res.json();
+
+  allRecords = records.sort((a, b) => {
+    const dateA = a.fields["التاريخ"] || "";
+    const dateB = b.fields["التاريخ"] || "";
+    const timeA = a.fields["التوقيت"] || "";
+    const timeB = b.fields["التوقيت"] || "";
+    return (dateA + timeA).localeCompare(dateB + timeB);
+  });
+
+  renderAll(allRecords);
+}
+
+function renderAll(records) {
+  renderTable(records);
+  renderMobileCards(records);
+}
+
+function renderTable(records) {
+  const tbody = document.querySelector("#tasksTable tbody");
+  tbody.innerHTML = "";
+
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-row">لا توجد مهام حالياً</td></tr>`;
+    return;
+  }
+
+  records.forEach(record => {
+    const f = record.fields;
+    const tr = document.createElement("tr");
+
+    columns.forEach(col => {
+      const td = document.createElement("td");
+      td.contentEditable = "true";
+      td.innerText = f[col] || "";
+      td.dataset.original = f[col] || "";
+
+      td.addEventListener("blur", async () => {
+        const newValue = td.innerText.trim();
+        const oldValue = td.dataset.original;
+
+        if (newValue !== oldValue) {
+          await updateTask(record.id, { [col]: newValue });
+          td.dataset.original = newValue;
+        }
+      });
+
+      tr.appendChild(td);
+    });
+
+    const actionTd = document.createElement("td");
+    actionTd.innerHTML = `<button class="danger small" onclick="deleteTask('${record.id}')">حذف</button>`;
+    tr.appendChild(actionTd);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMobileCards(records) {
+  const container = document.getElementById("mobileCards");
+  container.innerHTML = "";
+
+  if (!records.length) {
+    container.innerHTML = `<div class="empty-mobile">لا توجد مهام حالياً</div>`;
+    return;
+  }
+
+  records.forEach(record => {
+    const f = record.fields;
+
+    const card = document.createElement("div");
+    card.className = "task-card";
+
+    card.innerHTML = `
+      <div class="task-card-title">${f["الفعالية"] || "مهمة جديدة"}</div>
+
+      <div class="task-row">
+        <label class="task-label">التاريخ</label>
+        <input data-field="التاريخ" value="${escapeHtml(f["التاريخ"] || "")}">
+      </div>
+
+      <div class="task-row">
+        <label class="task-label">التوقيت</label>
+        <input data-field="التوقيت" value="${escapeHtml(f["التوقيت"] || "")}">
+      </div>
+
+      <div class="task-row">
+        <label class="task-label">الفعالية</label>
+        <input data-field="الفعالية" value="${escapeHtml(f["الفعالية"] || "")}">
+      </div>
+
+      <div class="task-row">
+        <label class="task-label">القاعة</label>
+        <input data-field="القاعة" value="${escapeHtml(f["القاعة"] || "")}">
+      </div>
+
+      <div class="task-row">
+        <label class="task-label">الموظف المكلف</label>
+        <input data-field="الموظف المكلف" value="${escapeHtml(f["الموظف المكلف"] || "")}">
+      </div>
+
+      <div class="task-row">
+        <label class="task-label">ملاحظات</label>
+        <textarea data-field="ملاحظات">${escapeHtml(f["ملاحظات"] || "")}</textarea>
+      </div>
+
+      <div class="card-actions">
+        <button onclick="saveMobileCard('${record.id}', this)">حفظ</button>
+        <button class="danger" onclick="deleteTask('${record.id}')">حذف</button>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+async function updateTask(id, fields) {
+  const res = await fetch(`/api/tasks/${id}`, {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(fields)
+  });
+
+  if (res.ok) {
+    showToast("تم الحفظ");
+    await loadTasks();
+  } else {
+    showToast("فشل الحفظ", "error");
+  }
+}
+
+async function saveMobileCard(id, button) {
+  const card = button.closest(".task-card");
+  const data = {};
+
+  card.querySelectorAll("[data-field]").forEach(input => {
+    data[input.dataset.field] = input.value.trim();
+  });
+
+  await updateTask(id, data);
+}
+
+async function addTask() {
+  const res = await fetch("/api/tasks", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      "التاريخ": "",
+      "التوقيت": "",
+      "الفعالية": "مهمة جديدة",
+      "القاعة": "",
+      "الموظف المكلف": "",
+      "ملاحظات": ""
+    })
+  });
+
+  if (res.ok) {
+    showToast("تمت إضافة مهمة جديدة");
+    await loadTasks();
+  } else {
+    showToast("فشل إضافة المهمة", "error");
+  }
+}
+
+async function deleteTask(id) {
+  const confirmed = confirm("هل أنت متأكد من حذف هذه المهمة؟");
+
+  if (!confirmed) return;
+
+  const res = await fetch(`/api/tasks/${id}`, {
+    method: "DELETE"
+  });
+
+  if (res.ok) {
+    showToast("تم حذف المهمة");
+    await loadTasks();
+  } else {
+    showToast("فشل حذف المهمة", "error");
+  }
+}
+
+document.getElementById("searchInput").addEventListener("keyup", function () {
+  const val = this.value.toLowerCase();
+
+  const filtered = allRecords.filter(r => {
+    const f = r.fields;
+    return Object.values(f).join(" ").toLowerCase().includes(val);
+  });
+
+  renderAll(filtered);
+});
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+checkLogin();
+</script>
+
+</body>
+</html>
